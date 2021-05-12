@@ -1,17 +1,20 @@
 const ATMDeposit = ({ onChange, isDeposit, isValid }) => {
     const choice = ['Deposit', 'Cash Back'];
     console.log(`ATM isDeposit: ${isDeposit}`);
+
+
     return (
       <label className="label huge">
         <h3> {choice[Number(!isDeposit)]}</h3>
         <input id="number-input" type="number" width="200" onChange={onChange}></input>
-        <input type="submit" disabled={!isValid} width="200" value="Submit" id="submit-input"></input>
+        <input type="submit" /*disabled={!isValid}*/ width="200" value="Submit" id="submit-input"></input>
       </label>
     );
   };
+
+
   
   const Account = () => {
-    // let deposit = 0; // state of this transaction
     const [deposit, setDeposit] = React.useState(0);
     const [totalState, setTotalState] = React.useState(0);
     const [isDeposit, setIsDeposit] = React.useState(true);
@@ -25,15 +28,26 @@ const ATMDeposit = ({ onChange, isDeposit, isValid }) => {
       if (Number(event.target.value) <= 0) {
         return setValidTransaction(false);
       }
+      console.log("total state:", totalState);
       if (atmMode === 'Cash Back' && Number(event.target.value) > totalState) {
         setValidTransaction(false);
       } else {
         setValidTransaction(true);
       }
+
       setDeposit(Number(event.target.value));
     };
     const handleSubmit = (event) => {
+
       let newTotal = isDeposit ? totalState + deposit : totalState - deposit;
+
+      if(newTotal < 0) {
+          alert('balance too low');
+          event.preventDefault();
+          return null;
+      }
+
+
       setTotalState(newTotal);
       setValidTransaction(false);
       event.preventDefault();
